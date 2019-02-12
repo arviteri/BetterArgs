@@ -1,0 +1,11 @@
+{
+  "name": "betterargs",
+  "version": "1.0.0",
+  "description": "A string parsing tool to help build CLIs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Andrew Viteri",
+  "license": "MIT"
+}
