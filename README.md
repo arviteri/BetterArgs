@@ -87,7 +87,7 @@ $ ['arg1', 'arg2', 'arg3']
 }
 ```
 <br />
-<a href="ex" />
+<a id="ex" />
 
 ## Full Example
 
