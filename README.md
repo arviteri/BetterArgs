@@ -6,6 +6,7 @@ __IMPORTANT__: The `init` function needs to be called after all flags and comman
 
 Click [here](#ex) to see a full example program using BetterArgs.
 
+
 Example:
 
 The following input.... `yourcli install somedata -a A1 A2 A3 -b B1 B2 B3 -c C1 C2 C3`
@@ -20,6 +21,12 @@ args = {
 	c: ['C1', 'C2', 'C3']
 }
 ```
+
+## Install
+
+To install, run `npm install betterargs`
+
+<br />
 
 ## Usage
 
