@@ -11,7 +11,11 @@ var globalFlags = {};
 var globalFlagAliases = {};
 
 /**
- * Sets a global flag which overrides commands.
+ * Sets a global flag which may or may not override command.
+ * @arg name {string} - flag name. Ex. 'version' 
+ * @arg alias {string} - flag alias. Ex. 'v'
+ * @arg func {function} - function that executes if flag is present.
+ * @arg terminating {Bool} - whether or not the flag will end the cli. 
  */
 const setGlobalFlag = (name, alias, func, terminating) => {
 	globalFlagAliases[alias] = name;
@@ -24,6 +28,8 @@ const setGlobalFlag = (name, alias, func, terminating) => {
 
 /**
  * Sets a function for a command.
+ * @arg name {string} - string user will type to execute the function.
+ * @arg func {function} - the function that executes when command is typed.
  */
 const setCommand = (name, func) => {
 	cmds[name] = {
@@ -93,13 +99,15 @@ const executeCmd = () => {
 
 	if (cmd) {
 		const cmdArgs = data[0].slice(3);
-		cmd.func(cmdArgs, data);
+		const flagData = data;
+		delete flagData[0];
+		cmd.func(cmdArgs, flagData);
 		return;
 	}
 }
 
 /**
- * Initializes the app to read and parse the input from the command line.
+ * Initializes the cli to read and parse the input from the command line.
  */
 const init = () => {
 	parseInput();
