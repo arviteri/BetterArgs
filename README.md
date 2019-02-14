@@ -1,151 +1,128 @@
 # BetterArgs
 
-BetterArgs is a lightweight tool to help you create simple command line interfaces. Essentially BetterArgs is a string parser, which parses the command line input and organizes it based on flag input. 
+BetterArgs is a lightweight tool that parses command line arguments and organizes them by flags. Its purpose is to create an easier method for developing command line interfaces. 
 
-__IMPORTANT__: The `init` function needs to be called after all flags and commands have been set.
+## Example
 
-Click [here](#ex) to see a full example program using BetterArgs.
-
-
-Example:
-
-The following input.... `yourcli install somedata -a A1 A2 A3 -b B1 B2 B3 -c C1 C2 C3`
-
-...is organized into a JavaScript object that looks like this...
-
+BetterArgs parses the following command...
+`$ yourcli makeproject TestProj -d ~/desktop --license MIT` 
+...into the following JavaScript object.
 ```
-args = {
-	0: ['...', '...', 'install', 'somedata'],
-	a: ['A1', 'A2', 'A3'],
-	b: ['B1', 'B2', 'B3'],
-	c: ['C1', 'C2', 'C3']
+{
+  0: ['...', '...', 'makeproject', 'TestProj'],
+ 'd': ['~/desktop'],
+ 'license': ['MIT']
 }
 ```
 
-## Install
+## Installation
 
-To install, run `npm install betterargs`
-
-<br />
+To use, run `npm install betterargs`.
 
 ## Usage
 
-BetterArgs exports three functions and the parsed data itself...
-- setGlobalFlag(name, alias, func, terminating)
-- setCommand(name, func)
-- init()
-- args
+BetterArgs exports three functions alongside the parsed data. The functions are listed below...
+- setGlobalFlag
+- setCommand
+- init
 
-### setGlobalFlag(name, alias, func, terminating)
+The parsed data is exported as `args`.
 
-The `setGlobaFlag` function sets an option that is independent of the command that is typed.
+To use BetterArgs install with the command `npm install betterargs` and require it at the top of the program.
 
-The `terminating` argument is a boolean variable that decides whether or not to end the CLI program after the global flag function has been executed. 
+`const cli = require('betterargs');`
 
-Example...
+Use the `setGlobalFlag` and `setCommand` functions to create a command line interface, and lastly initialize the program using the `init` function.
 
-```
-setGlobalFlag('version', 'v', (flagArgs) => {
-	const version = "v1.0.0";
-	console.log(version);
-}, true);
-```
-
-The code above works as follows...
-
-CLI input:  `$ yourcli -v` or `$ yourcli --version`
-CLI output: `$ v1.0.1`
-
-Because `terminating` is set to `true` in the example above, the program will terminate after outputting the version.
-
-The __flagArgs__ provided as an argument in the function is an array consisting of the string input after the flag, and before the next flag. 
-
-Example...
-
-```
-setGlobalFlag('printFlagArgs', 'p', (flagArgs) => {
-	console.log(flagArgs)
-}, true);
-```
-
-CLI input:  `$ yourcli -p arg1 arg2 arg2 --otherflag`
-CLI output: `$ ['arg1', 'arg2', 'arg2']`
-
-### setCommand(name, func)
-
-The `setCommand` function sets a function to a command name. It also provides the cli arguments in as an argument in the function. 
-
-Example...
-
-```
-setCommand('example', (cmdArgs, flagData) => {
-	console.log(cmdArgs);
-	console.log(flagData);
-});
-```
-
-CLI input:  `$ yourcli example arg1 arg2 arg3 --a A1 A2 --b B1 B2`
-CLI output: 
-```
-$ ['arg1', 'arg2', 'arg3']
-{
-	a: ['A1', 'A2'],
-	b: ['B1', 'B2']
-}
-```
-<br />
-<a id="ex" />
-
-## Full Example
+__Example__
 
 ```
 const cli = require('betterargs');
 
-cli.setGlobalFlag('version', 'v', (flagArgs) => {
-	console.log("v1.0.0");
-}, true);
-
-cli.setGlobalFlag('showFlagArgs', 's', (flagArgs) => {
-	console.log(flagArgs);
+cli.setGlobalFlag('version', 'v', (flagData) => {
+	console.log('v1.0.0');
 }, true);
 
 cli.setCommand('install', (cmdArgs, flagData) => {
-	const toInstall = cmdArgs[0]; // Argument after `install`
-	const someFlag = flagData['someFlag'] ? flagData['someFlag'] : flagData['f'];
 	
-	if (someFlag) {
-		// Do some stuff if flag has been set.
-		console.log("Flag has been executed.");
-	}
-	
-	console.log("Installing... " + toInstall);
+	// Code block for command implementation
+
+});
+
+cli.setCommand('printParsedInput', (cmdArgs, flagData) => {
+	const parsedInput = cli.args;
+	console.log(parsedInput);
 });
 
 cli.init();
 ```
 
-__CLI Input Examples Using Above Code__
+To get hold of the entire object storing the parsed command input, use `cli.args`.
 
-Input: `$ yourcli -v`
-Output: `v1.0.0`
+## Functions
 
-Input: `yourcli -s arg1 arg2`
-Output: `[arg1, arg2]`	
+BetterArgs exports a few functions which use the parsed data to help create command line interfaces. These functions are listed below...
+- setGlobalFlag
+- setCommand
 
-Input: `yourcli install somefile`
-Output: `Installing... somefile`
+__setGlobalFlag__ - The `setGlobalFlag(name, alias, func, terminating)` function sets a flag that may or may not override the command that is entered. The `terminating` option is what makes the decision of whether or not the program will terminate after the flags function has been executed. 
 
-Input: `yourcli install somefile -someFlag`
-Output: 
+__Example__
 ```
-Flag has been executed.
-Installing... somefile
-```
+const cli = require('betterargs');
 
-Input: `yourcli install somefile -f`
-Output: 
-```
-Flag has been executed.
-Installing... somefile
-```
+cli.setGlobalFlag('version', 'v', (flagArgs) => {
+	console.log('v1.0.0');
+}, true);
 
+cli.init();
+```
+The above example creates a command line interface that prints the version number whenever the flag `-v` or `--version` is typed in the command line. After the version number is printed, the program terminates. 
+
+As shown above, `setGlobalFlag` accepts a function as an argument. That function accepts `flagArgs` which stores an array holding the data entered between the flag that is being set, and the flag that comes after it.  
+
+For further example...
+
+```
+const cli = require('betterargs');
+
+cli.setGlobalFlag('flag', 'f', (flagArgs) => {
+	console.log(flagArgs);
+}, true);
+
+cli.init();
+``` 
+
+...the above program will print the `flagArgs` of the flag named `flag` whenever the flag has been entered in the command.  Below is an example of the command line interface that the program above creates. 
+
+Input:     `$ yourcli --flag arg1 arg1`  
+Output: `['arg1', 'arg2']`
+
+<br />
+
+__setCommand__ - The `setCommand(name, func)` function sets a function to a command name. The function being accepted has access to the arguments after the original command, and data holding the parsed flag information. 
+
+
+__Example__
+```
+const cli = require('betterargs');
+
+cli.setCommand('makeproject', (cmdArgs, flagData) => {
+	
+	const projName = cmdArgs[0];
+	const DIR_FLAG = flagData['d'] ? flagData['d'] : flagData['directory'];
+	
+	/* Check if dir_flag is set */
+	if (DIR_FLAG) {
+		const _dir = DIR_FLAG[0]; // Get directory input. 
+		// Create a new project using the directory
+		return;
+	}
+
+	/* dir_flag not set */
+	// Create new project using defaults.
+	
+});
+
+cli.init();
+```
