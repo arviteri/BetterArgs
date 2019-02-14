@@ -1,8 +1,8 @@
 {
   "name": "betterargs",
-  "version": "1.0.2",
-  "description": "A string parsing tool to help build CLIs",
-  "main": "index.js",
+  "version": "1.0.3",
+  "description": "Lightweight tool that parses command line arguments and organizes them by flag input.",
+  "main": "lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
